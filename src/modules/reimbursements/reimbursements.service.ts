@@ -54,10 +54,14 @@ export const reimbursementsService = {
     id: string,
     data: IReviewReimbursement
   ): Promise<ApiResponse<IReimbursement>> => {
-    const response = await api.put<ApiResponse<IReimbursement>>(
-      `/reimbursements/${id}/review`,
-      data
-    )
+    const response = await api.put<ApiResponse<IReimbursement>>(`/reimbursements/${id}/review`, {
+      ...data,
+      items: data.items?.map((item) => ({
+        ...item,
+        approvedAmount: Number(item.approvedAmount) || 0,
+        rejectionReason: item.rejectionReason || '',
+      })),
+    })
     return response.data
   },
 

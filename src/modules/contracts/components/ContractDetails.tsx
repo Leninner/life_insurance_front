@@ -2,7 +2,7 @@ import { ContractStatus } from '../contract.interfaces'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { BarChart3, FileText, Receipt, History } from 'lucide-react'
+import { BarChart3, FileText, Receipt } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Select,
@@ -29,7 +29,6 @@ import { PaymentForm } from './PaymentForm'
 import { ContractOverview } from './ContractOverview'
 import { ContractDocuments } from './ContractDocuments'
 import { ContractPayments } from './ContractPayments'
-import { ContractHistory } from './ContractHistory'
 import { useContractState } from '../hooks/useContractState'
 import { ContractPaymentInfo } from './ContractPaymentInfo'
 import { IPaymentMethod } from '../../payment_methods/payment-methods.interfaces'
@@ -123,13 +122,13 @@ export function ContractDetails({ contractId }: ContractDetailsProps) {
   }
 
   const gridSizeByStatus = {
-    [ContractStatus.DRAFT]: 'grid-cols-2',
-    [ContractStatus.PENDING_BASIC_DOCUMENTS]: 'grid-cols-3',
-    [ContractStatus.AWAITING_CLIENT_CONFIRMATION]: 'grid-cols-4',
-    [ContractStatus.ACTIVE]: 'grid-cols-4',
-    [ContractStatus.EXPIRED]: 'grid-cols-4',
-    [ContractStatus.CANCELLED]: 'grid-cols-4',
-    [ContractStatus.INACTIVE]: 'grid-cols-4',
+    [ContractStatus.DRAFT]: 'grid-cols-1',
+    [ContractStatus.PENDING_BASIC_DOCUMENTS]: 'grid-cols-2',
+    [ContractStatus.AWAITING_CLIENT_CONFIRMATION]: 'grid-cols-3',
+    [ContractStatus.ACTIVE]: 'grid-cols-3',
+    [ContractStatus.EXPIRED]: 'grid-cols-3',
+    [ContractStatus.CANCELLED]: 'grid-cols-3',
+    [ContractStatus.INACTIVE]: 'grid-cols-3',
   }
 
   return (
@@ -256,10 +255,6 @@ export function ContractDetails({ contractId }: ContractDetailsProps) {
                   Pagos
                 </TabsTrigger>
               )}
-              <TabsTrigger value="history" className="flex items-center gap-2">
-                <History className="h-4 w-4" />
-                Historial
-              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="mt-6">
@@ -291,10 +286,6 @@ export function ContractDetails({ contractId }: ContractDetailsProps) {
                 <ContractPayments contract={contract} />
               </TabsContent>
             )}
-
-            <TabsContent value="history" className="mt-6">
-              <ContractHistory contract={contract} />
-            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
