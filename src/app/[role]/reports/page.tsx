@@ -1,54 +1,52 @@
 'use client'
 
 import React from 'react'
-import { ReportCard } from '@/components/reports/ReportCard'
+import { useReports } from '@/modules/reports/hooks/useReports'
+import { DateRangeFilter } from '@/components/reports/DateRangeFilter'
+import { ReportChart } from '@/components/reports/ReportChart'
+import { format, subMonths } from 'date-fns'
 
-interface ReportsPageProps {
-  params: {
-    role: string
-  }
-}
+export default function ReportsPage() {
+  const [dateRange, setDateRange] = React.useState({
+    startDate: format(subMonths(new Date(), 6), 'yyyy-MM-dd'),
+    endDate: format(new Date(), 'yyyy-MM-dd'),
+  })
 
-export default function ReportsPage({ params }: ReportsPageProps) {
-  const unwrappedParams = params instanceof Promise ? React.use(params) : params
-  const role = unwrappedParams.role
-
-  const reports = [
-    {
-      title: 'Seguros Impagos',
-      description: 'Ver clientes con pagos pendientes',
-      href: `/${role}/reports/unpaid`,
-    },
-    {
-      title: 'Contratos por Cliente',
-      description: 'Ver estadísticas de contratos por cliente',
-      href: `/${role}/reports/contracts-by-client`,
-    },
-    {
-      title: 'Solicitudes Pendientes',
-      description: 'Ver solicitudes pendientes de aprobación',
-      href: `/${role}/reports/pending-requests`,
-    },
-    {
-      title: 'Contratos por Vencer',
-      description: 'Ver contratos próximos a vencer',
-      href: `/${role}/reports/expiring-contracts`,
-    },
-  ]
+  const {
+    unpaidInsurances,
+    isUnpaidInsurancesLoading,
+    contractsByClient,
+    isContractsByClientLoading,
+    pendingRequests,
+    isPendingRequestsLoading,
+    expiringContracts,
+    isExpiringContractsLoading,
+  } = useReports(dateRange)
 
   return (
-    <>
-      <h1 className="text-2xl font-bold mb-6">Reportes</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-        {reports.map((report) => (
-          <ReportCard
-            key={report.href}
-            title={report.title}
-            description={report.description}
-            href={report.href}
-          />
-        ))}
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Reportes</h1>
+        <DateRangeFilter value={dateRange} onChange={setDateRange} />
       </div>
-    </>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {!isUnpaidInsurancesLoading && unpaidInsurances && (
+          <ReportChart data={unpaidInsurances} title="Seguros Impagos" />
+        )}
+
+        {!isContractsByClientLoading && contractsByClient && (
+          <ReportChart data={contractsByClient} title="Contratos por Cliente" />
+        )}
+
+        {!isPendingRequestsLoading && pendingRequests && (
+          <ReportChart data={pendingRequests} title="Solicitudes Pendientes" />
+        )}
+
+        {!isExpiringContractsLoading && expiringContracts && (
+          <ReportChart data={expiringContracts} title="Contratos por Vencer" />
+        )}
+      </div>
+    </div>
   )
 }

@@ -75,30 +75,6 @@ export const agentNavItems: NavItem[] = [
     icon: IconHeartHandshake,
     permissions: PERMISSIONS[RoleType.AGENT],
   },
-  {
-    title: 'Reportes',
-    url: '/agent/reports',
-    icon: IconReport,
-    permissions: PERMISSIONS[RoleType.AGENT],
-    items: [
-      {
-        title: 'Seguros Impagos',
-        url: '/agent/reports/unpaid',
-      },
-      {
-        title: 'Contratos por Cliente',
-        url: '/agent/reports/contracts-by-client',
-      },
-      {
-        title: 'Solicitudes Pendientes',
-        url: '/agent/reports/pending-requests',
-      },
-      {
-        title: 'Contratos por Vencer',
-        url: '/agent/reports/expiring-contracts',
-      },
-    ],
-  },
 ]
 
 export const clientNavItems: NavItem[] = [
