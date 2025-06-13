@@ -122,6 +122,16 @@ export function ContractDetails({ contractId }: ContractDetailsProps) {
     setShowPaymentForm(false)
   }
 
+  const gridSizeByStatus = {
+    [ContractStatus.DRAFT]: 'grid-cols-2',
+    [ContractStatus.PENDING_BASIC_DOCUMENTS]: 'grid-cols-3',
+    [ContractStatus.AWAITING_CLIENT_CONFIRMATION]: 'grid-cols-4',
+    [ContractStatus.ACTIVE]: 'grid-cols-4',
+    [ContractStatus.EXPIRED]: 'grid-cols-4',
+    [ContractStatus.CANCELLED]: 'grid-cols-4',
+    [ContractStatus.INACTIVE]: 'grid-cols-4',
+  }
+
   return (
     <div className="space-y-6">
       <Card>
@@ -141,13 +151,20 @@ export function ContractDetails({ contractId }: ContractDetailsProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {Object.values(ContractStatus)
-                      .filter((status) => status !== ContractStatus.ACTIVE)
-                      .map((status) => (
-                        <SelectItem key={status} value={status}>
+                    {Object.values(ContractStatus).map((status) => {
+                      const isDisabled =
+                        contract.status === ContractStatus.DRAFT
+                          ? status !== ContractStatus.PENDING_BASIC_DOCUMENTS
+                          : contract.status === ContractStatus.PENDING_BASIC_DOCUMENTS
+                            ? status !== ContractStatus.AWAITING_CLIENT_CONFIRMATION
+                            : true
+
+                      return (
+                        <SelectItem key={status} value={status} disabled={isDisabled}>
                           {statusLabels[status]}
                         </SelectItem>
-                      ))}
+                      )
+                    })}
                   </SelectContent>
                 </Select>
               )}
@@ -216,19 +233,29 @@ export function ContractDetails({ contractId }: ContractDetailsProps) {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className={`grid w-full ${gridSizeByStatus[contract.status]}`}>
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <BarChart3 className="h-4 w-4" />
                 Resumen
               </TabsTrigger>
-              <TabsTrigger value="documents" className="flex items-center gap-2">
-                <FileText className="h-4 w-4" />
-                Documentos
-              </TabsTrigger>
-              <TabsTrigger value="payments" className="flex items-center gap-2">
-                <Receipt className="h-4 w-4" />
-                Pagos
-              </TabsTrigger>
+              {contract.status !== ContractStatus.DRAFT && (
+                <TabsTrigger value="documents" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Documentos
+                </TabsTrigger>
+              )}
+              {[
+                ContractStatus.ACTIVE,
+                ContractStatus.EXPIRED,
+                ContractStatus.CANCELLED,
+                ContractStatus.INACTIVE,
+                ContractStatus.AWAITING_CLIENT_CONFIRMATION,
+              ].includes(contract.status) && (
+                <TabsTrigger value="payments" className="flex items-center gap-2">
+                  <Receipt className="h-4 w-4" />
+                  Pagos
+                </TabsTrigger>
+              )}
               <TabsTrigger value="history" className="flex items-center gap-2">
                 <History className="h-4 w-4" />
                 Historial
@@ -239,27 +266,31 @@ export function ContractDetails({ contractId }: ContractDetailsProps) {
               <ContractOverview contract={contract} />
             </TabsContent>
 
-            <TabsContent value="documents" className="mt-6">
-              <ContractDocuments
-                contract={contract}
-                isClient={isClient}
-                isAgent={isAgent}
-                onFileUpload={handleFileUpload}
-                selectedDocType={selectedDocType}
-                setSelectedDocType={setSelectedDocType}
-              />
-            </TabsContent>
+            {contract.status !== ContractStatus.DRAFT && (
+              <TabsContent value="documents" className="mt-6">
+                <ContractDocuments
+                  contract={contract}
+                  isClient={isClient}
+                  isAgent={isAgent}
+                  onFileUpload={handleFileUpload}
+                  selectedDocType={selectedDocType}
+                  setSelectedDocType={setSelectedDocType}
+                />
+              </TabsContent>
+            )}
 
-            <TabsContent value="payments" className="mt-6 space-y-6">
-              {isClient &&
-                [
-                  ContractStatus.ACTIVE,
-                  ContractStatus.EXPIRED,
-                  ContractStatus.CANCELLED,
-                  ContractStatus.INACTIVE,
-                ].includes(contract.status) && <ContractPaymentInfo contract={contract} />}
-              <ContractPayments contract={contract} />
-            </TabsContent>
+            {[
+              ContractStatus.ACTIVE,
+              ContractStatus.EXPIRED,
+              ContractStatus.CANCELLED,
+              ContractStatus.INACTIVE,
+              ContractStatus.AWAITING_CLIENT_CONFIRMATION,
+            ].includes(contract.status) && (
+              <TabsContent value="payments" className="mt-6 space-y-6">
+                {isClient && <ContractPaymentInfo contract={contract} />}
+                <ContractPayments contract={contract} />
+              </TabsContent>
+            )}
 
             <TabsContent value="history" className="mt-6">
               <ContractHistory contract={contract} />

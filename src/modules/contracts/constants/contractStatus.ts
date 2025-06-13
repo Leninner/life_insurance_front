@@ -12,7 +12,7 @@ export const statusColors = {
 
 export const statusLabels = {
   [ContractStatus.ACTIVE]: 'Activo',
-  [ContractStatus.AWAITING_CLIENT_CONFIRMATION]: 'Pendiente de confirmación',
+  [ContractStatus.AWAITING_CLIENT_CONFIRMATION]: 'Pendiente de confirmación del cliente',
   [ContractStatus.EXPIRED]: 'Vencido',
   [ContractStatus.CANCELLED]: 'Cancelado',
   [ContractStatus.DRAFT]: 'Borrador',
