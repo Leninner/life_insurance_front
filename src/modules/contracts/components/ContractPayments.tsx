@@ -60,7 +60,7 @@ export function ContractPayments({ contract }: ContractPaymentsProps) {
     const label = 'Con tarjeta terminada en '
 
     console.log(contract.paymentMethod)
-    const details = JSON.parse(contract.paymentMethod?.details as unknown as string) || {}
+    const details = JSON.parse((contract.paymentMethod?.details as unknown as string) || '{}') || {}
 
     return details?.cardNumber?.slice(-4)
       ? `${label}${details?.cardNumber?.slice(-4)}`
