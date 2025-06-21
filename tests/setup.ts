@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { cleanup } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
+import { server } from './mocks/server'
 
 // Mock localStorage
 class LocalStorageMock {
@@ -40,19 +41,43 @@ function mockMatchMedia() {
   });
 }
 
+// Mock ResizeObserver
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+global.ResizeObserver = ResizeObserverMock;
+
+// Mock Next.js router
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    prefetch: vi.fn(),
+    back: vi.fn(),
+    pathname: '/',
+    query: {},
+  }),
+}));
+
 // Setup global mocks
 beforeAll(() => {
   global.localStorage = new LocalStorageMock() as unknown as Storage;
   mockMatchMedia();
+  server.listen({ onUnhandledRequest: 'error' })
 });
 
 // Cleanup after each test
 afterEach(() => {
   vi.clearAllMocks();
   cleanup()
+  server.resetHandlers()
 });
 
 // Clean up after all tests
 afterAll(() => {
   vi.resetAllMocks();
+  server.close()
 });
