@@ -12,21 +12,34 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginDto>()
+  } = useForm<LoginDto>({
+    mode: 'onSubmit',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
+
+  const onSubmitForm = handleSubmit((data) => {
+    if (onSubmit) {
+      onSubmit(data)
+    }
+  })
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault()
-        void handleSubmit(onSubmit || (() => {}))()
-      }}
-    >
+    <form onSubmit={onSubmitForm}>
       <div className="space-y-4">
         <div>
           <Input
             type="email"
             placeholder="Email"
-            {...register('email', { required: 'El email es requerido' })}
+            {...register('email', {
+              required: 'El email es requerido',
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: 'El email no es válido',
+              },
+            })}
           />
           {errors.email && <p className="text-red-500">{errors.email.message}</p>}
         </div>

@@ -198,13 +198,18 @@ function Sidebar({
   }
 
   return (
-    <div
-      className="group peer text-sidebar-foreground hidden md:block"
+    <aside
+      data-slot="sidebar"
+      className={cn(
+        'group peer text-sidebar-foreground hidden md:block',
+        className
+      )}
       data-state={state}
       data-collapsible={state === 'collapsed' ? collapsible : ''}
       data-variant={variant}
       data-side={side}
-      data-slot="sidebar"
+      role="complementary"
+      {...props}
     >
       {/* This is what handles the sidebar gap on desktop */}
       <div
@@ -231,7 +236,6 @@ function Sidebar({
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
           className
         )}
-        {...props}
       >
         <div
           data-sidebar="sidebar"
@@ -241,7 +245,7 @@ function Sidebar({
           {children}
         </div>
       </div>
-    </div>
+    </aside>
   )
 }
 
@@ -252,6 +256,7 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<t
     <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
+      data-testid="sidebar-trigger"
       variant="ghost"
       size="icon"
       className={cn('size-7', className)}
@@ -591,6 +596,7 @@ function SidebarMenuSkeleton({
     <div
       data-slot="sidebar-menu-skeleton"
       data-sidebar="menu-skeleton"
+      role="status"
       className={cn('flex h-8 items-center gap-2 rounded-md px-2', className)}
       {...props}
     >
