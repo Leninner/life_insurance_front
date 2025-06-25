@@ -29,6 +29,7 @@ import {
   IconChevronsRight,
 } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
+import { getEnumLabel } from '@/lib/utils/enum.utils'
 
 export function PaymentsTable() {
   const [sorting, setSorting] = useState<SortingState>([])
@@ -55,8 +56,10 @@ export function PaymentsTable() {
       accessorKey: 'status',
       header: 'Estado',
       cell: ({ row }) => (
-        <Badge variant={row.getValue('status') === 'completed' ? 'default' : 'secondary'}>
-          {row.getValue('status') === 'completed' ? 'Completado' : 'Pendiente'}
+        <Badge
+          variant={getEnumLabel(row.getValue('status')) === 'Completado' ? 'secondary' : 'default'}
+        >
+          {getEnumLabel(row.getValue('status'))}
         </Badge>
       ),
     },

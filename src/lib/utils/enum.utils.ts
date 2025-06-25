@@ -1,4 +1,4 @@
-import { ContractStatus } from '../../modules/contracts/contract.interfaces'
+import { ContractStatus, TransactionStatus } from '../../modules/contracts/contract.interfaces'
 import {
   InsuranceType,
   PaymentFrequency,
@@ -37,8 +37,11 @@ const enumLabels = {
   [ReimbursementItemType.SURGERY]: 'Cirugía',
   [ReimbursementItemType.DIAGNOSTIC]: 'Examen de diagnóstico',
   [ReimbursementItemType.HOSPITALIZATION]: 'Hospitalización',
+  [TransactionStatus.SUCCESS]: 'Completado',
 }
 
 export const getEnumLabel = (enumValue: string) => {
+  console.log('enumValue', enumValue)
+
   return enumLabels[enumValue as keyof typeof enumLabels]
 }

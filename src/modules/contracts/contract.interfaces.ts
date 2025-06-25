@@ -30,6 +30,7 @@ export enum TransactionStatus {
   PENDING = 'pending',
   PAID = 'paid',
   FAILED = 'failed',
+  SUCCESS = 'success',
 }
 
 export interface Contract {

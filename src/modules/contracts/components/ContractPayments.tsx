@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Contract, TransactionStatus } from '../contract.interfaces'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { getEnumLabel } from '@/lib/utils/enum.utils'
 
 interface ContractPaymentsProps {
   contract: Contract
@@ -18,6 +19,8 @@ export function ContractPayments({ contract }: ContractPaymentsProps) {
         return <CheckCircle2 className="h-5 w-5 text-green-600" />
       case TransactionStatus.FAILED:
         return <XCircle className="h-5 w-5 text-red-600" />
+      case TransactionStatus.SUCCESS:
+        return <CheckCircle2 className="h-5 w-5 text-green-600" />
       default:
         return <Clock className="h-5 w-5 text-yellow-600" />
     }
@@ -29,6 +32,8 @@ export function ContractPayments({ contract }: ContractPaymentsProps) {
         return 'bg-green-100'
       case TransactionStatus.FAILED:
         return 'bg-red-100'
+      case TransactionStatus.SUCCESS:
+        return 'bg-green-100'
       default:
         return 'bg-yellow-100'
     }
@@ -40,19 +45,10 @@ export function ContractPayments({ contract }: ContractPaymentsProps) {
         return 'bg-green-500'
       case TransactionStatus.FAILED:
         return 'bg-red-500'
+      case TransactionStatus.SUCCESS:
+        return 'bg-green-500'
       default:
         return 'bg-yellow-500'
-    }
-  }
-
-  const getStatusLabel = (status: TransactionStatus) => {
-    switch (status) {
-      case TransactionStatus.PAID:
-        return 'Pagado'
-      case TransactionStatus.FAILED:
-        return 'Fallido'
-      default:
-        return 'Pendiente'
     }
   }
 
@@ -113,7 +109,7 @@ export function ContractPayments({ contract }: ContractPaymentsProps) {
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <Badge className={getStatusBadgeColor(transaction.status)}>
-                      {getStatusLabel(transaction.status)}
+                      {getEnumLabel(transaction.status)}
                     </Badge>
                     {transaction.status === TransactionStatus.FAILED &&
                       transaction.retryCount > 0 && (
